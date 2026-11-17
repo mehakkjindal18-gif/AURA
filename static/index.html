@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — Personality Architecture &amp; Cognitive Profiling</title>
+<meta name="description" content="Predict introvert or extrovert tendencies from seven questionnaire answers with a Random Forest model. An educational machine learning project.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+<noscript><style>#loader{display:none}.clip-inner{transform:none!important;opacity:1!important}</style></noscript>
+</head>
+<body>
+
+<div id="loader" role="status" aria-live="polite">
+  <div class="lrow"><span class="eyebrow"><span class="dot"></span>Loading model results</span><span id="loader-counter">0%</span></div>
+  <p class="ltitle">AURA — Personality Architecture &amp; Cognitive Profiling</p>
+  <div class="lbar"><div class="lfill" id="loader-fill"></div></div>
+</div>
+
+<button class="fab" id="fab" onclick="toggleMenu()" aria-label="Open menu"><span></span><span></span></button>
+
+<main>
+<!-- Hero -->
+<section class="hero" id="top">
+  <img class="hero-bg" id="hero-img" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=2000&auto=format&fit=crop" alt="" onerror="this.remove()">
+  <div class="hero-overlay"></div><div class="hero-glow"></div>
+
+  <header class="topbar">
+    <nav class="tnav" aria-label="Primary"><a href="#about">About</a><a href="#predict">Questionnaire</a><a href="#performance">Performance</a></nav>
+    <a href="#top" class="mark" aria-label="Beyond the Social Spectrum, home">
+      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+      Beyond the Social Spectrum
+    </a>
+    <div class="tright"><a href="#predict" class="pill light sm">Take the test</a>
+      <button class="burger" onclick="toggleMenu()" aria-label="Open menu"><span></span><span></span></button></div>
+  </header>
+
+  <h1 class="hero-title">
+    <span class="clip-wrap"><span class="clip-inner">AURA</span></span>
+    <span class="clip-wrap sub"><span class="clip-inner"><span class="vh"> — </span>Personality Architecture &amp; Cognitive Profiling</span></span>
+  </h1>
+
+  <div class="hero-bottom">
+    <div class="hb-left">
+      <div class="spectrum" aria-hidden="true"><span>Introvert</span><div class="track"><i></i></div><span>Extrovert</span></div>
+      <p class="hero-sub">Predicting introvert or extrovert tendencies from seven questionnaire answers, using a Random Forest model trained on the Kaggle Personality dataset.</p>
+      <div class="cta">
+        <a href="#predict" class="pill light">Discover Your Personality</a>
+        <a href="#model" class="pill ghost">Explore the Science</a>
+      </div>
+    </div>
+    <div class="glass acc" id="hero-acc" hidden>
+      <span>Random Forest test accuracy</span><b id="hero-acc-v"></b>
+      <small>Reported on held-out data. It is not a guarantee for new people.</small>
+    </div>
+  </div>
+</section>
+
+<!-- About -->
+<section class="shell" id="about"><div class="narrow">
+  <div class="eyebrow dark"><span class="dot"></span>About the project</div>
+  <h2>What is being predicted</h2>
+  <p>Here, personality classification means a binary label: <b>Introvert</b> or <b>Extrovert</b>. The labels in the dataset come from self-reported answers about everyday social behaviour.</p>
+  <p>Behaviour indicators such as time alone, stage fear, event attendance and friend-circle size are easy to answer and easy to measure. A model learns how combinations of these answers tend to line up with each label across many respondents.</p>
+  <p>The project is educational and analytical. It shows how a short questionnaire becomes a trained, evaluated classifier that is served through a web API.</p>
+</div></section>
+
+<!-- How it works -->
+<section class="shell soft" id="how">
+  <div class="eyebrow dark"><span class="dot"></span>How it works</div>
+  <h2>From answers to a probability</h2>
+  <ol class="flow">
+    <li><b>Answer</b><span>You answer seven questions.</span></li>
+    <li><b>Encode</b><span>Responses become numbers. Yes and No become 1 and 0.</span></li>
+    <li><b>Scale</b><span>The saved StandardScaler transforms the input.</span></li>
+    <li><b>Predict</b><span>The Random Forest processes the features.</span></li>
+    <li><b>Display</b><span>The predicted class and probability appear.</span></li>
+  </ol>
+</section>
+
+<!-- Questionnaire -->
+<section class="shell" id="predict">
+  <div class="center"><div class="eyebrow dark"><span class="dot"></span>Interactive questionnaire</div>
+  <h2>Discover your result</h2>
+  <p class="note">Your answers are sent to the Flask API, scaled with the saved StandardScaler and run through the trained Random Forest.</p></div>
+  <div class="card quiz" id="quiz" aria-live="polite"></div>
+</section>
+
+<!-- Models -->
+<section class="shell soft" id="model">
+  <div class="eyebrow dark"><span class="dot"></span>Understanding the models</div>
+  <h2>Two classifiers, compared</h2>
+  <div class="two">
+    <div class="card">
+      <svg class="ill" viewBox="0 0 220 96" role="img" aria-label="S-shaped logistic curve crossing a 50 percent line">
+        <line x1="10" y1="48" x2="210" y2="48" class="dash"/><path d="M10 84 C70 84 80 82 105 48 S150 12 210 12" class="curve"/><circle cx="105" cy="48" r="4" class="pt"/>
+        <text x="12" y="92">low score</text><text x="150" y="92">high score</text><text x="140" y="44" class="lbl">50%</text>
+      </svg>
+      <h3>Logistic Regression</h3>
+      <p>Weighs each scaled answer, adds the results together, and squeezes the total into a probability between 0 and 1. It is fast and easy to interpret, but it draws a single straight boundary between the classes.</p>
+    </div>
+    <div class="card">
+      <svg class="ill" viewBox="0 0 220 96" role="img" aria-label="Three small decision trees whose votes are combined">
+        <g class="tree"><path d="M40 12 L22 42 M40 12 L58 42 M22 42 L12 72 M22 42 L32 72 M58 42 L48 72 M58 42 L68 72"/><circle cx="40" cy="12" r="4"/><circle cx="22" cy="42" r="3.5"/><circle cx="58" cy="42" r="3.5"/></g>
+        <g class="tree"><path d="M110 12 L92 42 M110 12 L128 42 M92 42 L82 72 M92 42 L102 72 M128 42 L118 72 M128 42 L138 72"/><circle cx="110" cy="12" r="4"/><circle cx="92" cy="42" r="3.5"/><circle cx="128" cy="42" r="3.5"/></g>
+        <g class="tree"><path d="M180 12 L162 42 M180 12 L198 42 M162 42 L152 72 M162 42 L172 72 M198 42 L188 72 M198 42 L208 72"/><circle cx="180" cy="12" r="4"/><circle cx="162" cy="42" r="3.5"/><circle cx="198" cy="42" r="3.5"/></g>
+        <text x="62" y="92">many trees vote, the votes are averaged</text>
+      </svg>
+      <h3>Random Forest</h3>
+      <p>Builds many decision trees on random samples of the data and averages their votes. It can capture combinations of answers that a single straight boundary misses.</p>
+    </div>
+  </div>
+  <p class="note">Both were compared because a simple, interpretable baseline shows whether extra complexity is worth it. Their test accuracies are very close. Random Forest powers the live prediction because it ranks the two classes better than Logistic Regression (higher ROC-AUC on the test set) and provides per-feature importances.</p>
+</section>
+
+<!-- Performance -->
+<section class="shell" id="performance">
+  <div class="eyebrow dark"><span class="dot"></span>Model performance</div>
+  <h2>Experimental results</h2>
+  <p class="note" id="perf-note">Loading results from the trained model…</p>
+  <div id="metrics" class="metrics"></div>
+  <div class="two">
+    <div class="card"><h3>Confusion matrix</h3><p class="note small">Random Forest, test set</p><div id="cm"></div></div>
+    <div class="card"><h3>ROC curve</h3><p class="note small">Test set. The dashed line is random guessing.</p><div id="roc"></div></div>
+  </div>
+  <div class="card"><h3>Test-set comparison</h3><p class="note small">The two focus models on the same held-out data.</p><div class="scroll" id="cmp-test"></div></div>
+  <div class="card"><h3>Benchmark of all models</h3><p class="note small" id="cmp-note"></p><div class="scroll" id="cmp"></div></div>
+  <h2 id="features" class="gap">Feature importance</h2>
+  <div class="card"><p class="note small">How much each questionnaire feature contributed to the trained Random Forest (<code>feature_importances_</code>).</p><div id="fi"></div></div>
+</section>
+
+<!-- Limitations -->
+<section class="shell soft" id="limits"><div class="narrow">
+  <div class="eyebrow dark"><span class="dot"></span>Responsible interpretation</div>
+  <h2>Limitations</h2>
+  <ul>
+    <li>The model learns patterns from self-reported questionnaire data.</li>
+    <li>Predictions depend on the dataset and its quality.</li>
+    <li>The model does not capture every dimension of human personality.</li>
+    <li>This is an educational machine learning demonstration, not a validated psychological or clinical assessment.</li>
+  </ul>
+</div></section>
+
+<!-- Footer -->
+<footer class="shell dark">
+  <div class="frow">
+    <div><div class="eyebrow"><span class="dot"></span>Machine learning project</div>
+    <h2>Personality Prediction: Introvert vs Extrovert</h2>
+    <p class="fsub">Classifies questionnaire responses with Logistic Regression and Random Forest, served through a Flask API.</p></div>
+    <a href="#predict" class="pill light">Take the questionnaire</a>
+  </div>
+  <ul class="tech" aria-label="Technologies used"><li>Python</li><li>Flask</li><li>Pandas</li><li>NumPy</li><li>Scikit-learn</li><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+  <div class="fbot"><p>© 2026 Personality Prediction. Educational project.</p>
+    <nav aria-label="Footer"><a href="#about">About</a><a href="#how">How it works</a><a href="#predict">Questionnaire</a><a href="#model">Models</a><a href="#performance">Performance</a><a href="#limits">Limitations</a></nav></div>
+</footer>
+</main>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <div class="mhead"><span class="mark">Beyond the Social Spectrum</span><button class="burger" onclick="toggleMenu()" aria-label="Close menu">✕</button></div>
+  <nav class="mlinks" aria-label="Menu">
+    <a href="#about" onclick="toggleMenu()">About</a><a href="#how" onclick="toggleMenu()">How it works</a><a href="#predict" onclick="toggleMenu()">Questionnaire</a>
+    <a href="#model" onclick="toggleMenu()">Models</a><a href="#performance" onclick="toggleMenu()">Performance</a><a href="#limits" onclick="toggleMenu()">Limitations</a>
+  </nav>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
