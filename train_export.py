@@ -16,9 +16,16 @@ from sklearn.ensemble import (RandomForestClassifier, ExtraTreesClassifier,
     GradientBoostingClassifier, AdaBoostClassifier)
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticDiscriminantAnalysis
 from sklearn.dummy import DummyClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.base import clone
 
 CSV = os.environ.get("PERSONALITY_CSV", "personality_datasert.csv")
 df = pd.read_csv(CSV)
+
+# Remove duplicate rows
+df = df.drop_duplicates().copy()
+
+# Convert categorical columns into numerical values
 df["Stage_fear"] = df["Stage_fear"].map({"No": 0, "Yes": 1})
 df["Drained_after_socializing"] = df["Drained_after_socializing"].map({"No": 0, "Yes": 1})
 df["Personality"] = df["Personality"].map({"Introvert": 0, "Extrovert": 1})
